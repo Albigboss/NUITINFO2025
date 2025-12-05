@@ -1,0 +1,1022 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NIRD Manager - Sauvez le lycée !</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .game-container {
+            max-width: 900px;
+            width: 100%;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+
+        .game-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            text-align: center;
+            display: flex;
+            flex-direction: row;
+            justify-content: space-around;
+            align-items: center;
+        }
+
+        .game-header-btn input{
+            background-color: transparent!important;
+            color: white!important;
+            border: 2px solid white!important;
+            border-radius: 4px;
+            padding: 2%;
+            font-size: 2rem;
+            font-weight: bold;
+        }
+
+        .game-header-btn input:hover{
+            background-color: white!important;
+            color: #667eea!important;
+            cursor: pointer;
+        }
+
+        .game-header h1 {
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+
+        .game-header p {
+            opacity: 0.9;
+        }
+
+        .stats-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            padding: 20px;
+            background: #f8f9fa;
+        }
+
+        .stat-box {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .stat-bar {
+            width: 100%;
+            height: 12px;
+            background: #e0e0e0;
+            border-radius: 6px;
+            overflow: hidden;
+        }
+
+        .stat-fill {
+            height: 100%;
+            transition: width 0.5s ease, background 0.3s ease;
+        }
+
+        .budget-fill {
+            background: linear-gradient(90deg, #4CAF50, #45a049);
+        }
+
+        .co2-fill {
+            background: linear-gradient(90deg, #ff6b6b, #ee5a52);
+        }
+
+        .resistance-fill {
+            background: linear-gradient(90deg, #667eea, #764ba2);
+        }
+
+        .mission-container {
+            padding: 30px;
+        }
+
+        .turn-info {
+            text-align: center;
+            margin-bottom: 20px;
+            padding: 10px;
+            background: #f0f0f0;
+            border-radius: 8px;
+        }
+
+        .mission-image {
+            width: 100%;
+            height: 200px;
+            background: linear-gradient(135deg, #667eea33 0%, #764ba233 100%);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 5rem;
+            margin-bottom: 20px;
+        }
+
+        .mission-title {
+            font-size: 1.8rem;
+            color: #333;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .mission-text {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            color: #555;
+            margin-bottom: 25px;
+            padding: 15px;
+            background: #f9f9f9;
+            border-left: 4px solid #667eea;
+            border-radius: 5px;
+        }
+
+        .choices-container {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .choice-button {
+            background: white;
+            border: 2px solid #667eea;
+            padding: 20px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: left;
+        }
+
+        .choice-button:hover {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .choice-button:hover .choice-impacts {
+            color: white;
+        }
+
+        .choice-text {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .choice-impacts {
+            font-size: 0.9rem;
+            color: #666;
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .impact {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .impact.positive {
+            color: #4CAF50;
+        }
+
+        .impact.negative {
+            color: #f44336;
+        }
+
+        .feedback-container {
+            padding: 20px;
+            background: #f8f9fa;
+            min-height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .feedback-message {
+            font-size: 1.1rem;
+            text-align: center;
+            padding: 15px;
+            border-radius: 8px;
+            animation: slideIn 0.5s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .feedback-message.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .feedback-message.warning {
+            background: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeaa7;
+        }
+
+        .feedback-message.danger {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .game-over {
+            text-align: center;
+            padding: 40px;
+        }
+
+        .game-over h2 {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            color: #667eea;
+        }
+
+        .game-over p {
+            font-size: 1.2rem;
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+
+        .restart-button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 1.1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .restart-button:hover {
+            transform: scale(1.05);
+        }
+
+        .achievements {
+            margin-top: 20px;
+            padding: 20px;
+            background: #f9f9f9;
+            border-radius: 10px;
+        }
+
+        .achievement {
+            padding: 10px;
+            margin: 10px 0;
+            background: white;
+            border-radius: 5px;
+            border-left: 4px solid #4CAF50;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        @media (max-width: 768px) {
+            .game-header h1 {
+                font-size: 1.5rem;
+            }
+
+            .mission-title {
+                font-size: 1.4rem;
+            }
+
+            .choice-button {
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="game-container">
+        <div class="game-header">
+            <section>
+                <h1>🎮 NIRD Manager</h1>
+                <p>Sauvez votre lycée de l'Empire numérique !</p>
+            </section>
+            <section class="game-header-btn">
+                <form action="../index.html">
+                    <input type="submit" value="Retour au menu" />
+                </form>
+            </section>
+        </div>
+
+        <div class="stats-container">
+            <div class="stat-box">
+                <div class="stat-label">💰 Budget</div>
+                <div class="stat-value" id="budget-value">10 000 €</div>
+                <div class="stat-bar">
+                    <div class="stat-fill budget-fill" id="budget-bar" style="width: 100%"></div>
+                </div>
+            </div>
+
+            <div class="stat-box">
+                <div class="stat-label">🌍 Impact CO2</div>
+                <div class="stat-value" id="co2-value">0 kg</div>
+                <div class="stat-bar">
+                    <div class="stat-fill co2-fill" id="co2-bar" style="width: 0%"></div>
+                </div>
+            </div>
+
+            <div class="stat-box">
+                <div class="stat-label">✊ Résistance</div>
+                <div class="stat-value" id="resistance-value">50%</div>
+                <div class="stat-bar">
+                    <div class="stat-fill resistance-fill" id="resistance-bar" style="width: 50%"></div>
+                </div>
+            </div>
+        </div>
+
+        <div id="game-content">
+            <div class="mission-container">
+                <div class="turn-info">
+                    <strong>Tour <span id="current-turn">1</span> / <span id="total-turns">12</span></strong>
+                </div>
+
+                <div class="mission-image" id="mission-image">🏫</div>
+
+                <h2 class="mission-title" id="mission-title">Chargement...</h2>
+
+                <div class="mission-text" id="mission-text">
+                    Préparez-vous à gérer votre lycée...
+                </div>
+
+                <div class="choices-container" id="choices-container">
+                    <!-- Les choix seront générés ici -->
+                </div>
+            </div>
+
+            <div class="feedback-container">
+                <div class="feedback-message" id="feedback-message">
+                    Bienvenue ! Faites vos choix avec sagesse...
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ========== CONFIGURATION DU JEU ==========
+        const GAME_CONFIG = {
+            initialBudget: 10000,
+            maxBudget: 15000,
+            maxCO2: 5000,
+            totalTurns: 12,
+            initialResistance: 50
+        };
+
+        // ========== ÉTAT DU JEU ==========
+        let gameState = {
+            budget: GAME_CONFIG.initialBudget,
+            co2: 0,
+            resistance: GAME_CONFIG.initialResistance,
+            currentTurn: 1,
+            currentMissionIndex: 0,
+            gameOver: false,
+            achievements: []
+        };
+
+        // ========== MISSIONS ==========
+        const missions = [
+            {
+                id: 1,
+                titre: "🖥️ La Fin de Windows 10",
+                emoji: "💻",
+                texte: "Windows 10 n'est plus supporté par Microsoft. Les 50 PC de la salle B12 sont considérés comme obsolètes, mais le matériel fonctionne encore parfaitement. Que décidez-vous ?",
+                choix: [
+                    {
+                        texte: "Tout racheter en neuf avec Windows 11",
+                        budget: -5000,
+                        co2: 500,
+                        resistance: -20,
+                        message: "Les PC sont rapides mais le budget a fondu ! Et quelle empreinte carbone..."
+                    },
+                    {
+                        texte: "Installer Linux (Ubuntu/PrimTux)",
+                        budget: -200,
+                        co2: 0,
+                        resistance: 30,
+                        message: "Excellent choix ! Les PC tournent à merveille et les élèves adorent. Le village NIRD grandit ! 🎉"
+                    },
+                    {
+                        texte: "Ne rien faire et espérer",
+                        budget: 0,
+                        co2: 0,
+                        resistance: -10,
+                        message: "Les PC deviennent vulnérables sans mises à jour. Ce n'est pas une bonne stratégie..."
+                    }
+                ]
+            },
+            {
+                id: 2,
+                titre: "☁️ Le Stockage des Données",
+                emoji: "💾",
+                texte: "Les profs veulent partager des documents. Un commercial propose une solution Cloud hébergée aux USA, gratuite la première année. L'alternative ? Un serveur local.",
+                choix: [
+                    {
+                        texte: "Accepter le Cloud américain (gratuit !)",
+                        budget: 0,
+                        co2: 150,
+                        resistance: -40,
+                        message: "Pratique, mais vos données sont maintenant hors UE... Et cette facture l'année prochaine ! 💸"
+                    },
+                    {
+                        texte: "Installer Nextcloud sur un vieux PC",
+                        budget: -150,
+                        co2: 10,
+                        resistance: 40,
+                        message: "Bravo ! Données souveraines, contrôle total. Les profs sont conquis ! 🛡️"
+                    }
+                ]
+            },
+            {
+                id: 3,
+                titre: "📱 Les Tablettes de la Région",
+                emoji: "📱",
+                texte: "La région propose de donner 100 tablettes neuves à tous les élèves, mais elles sont verrouillées avec un système propriétaire. C'est tentant...",
+                choix: [
+                    {
+                        texte: "Accepter toutes les tablettes",
+                        budget: 0,
+                        co2: 1000,
+                        resistance: -15,
+                        message: "Les élèves sont contents, mais quelle catastrophe écologique ! Et impossible de personnaliser..."
+                    },
+                    {
+                        texte: "Refuser et améliorer la salle info",
+                        budget: -500,
+                        co2: 50,
+                        resistance: 20,
+                        message: "Un choix courageux ! La salle informatique est maintenant un modèle. 🌟"
+                    },
+                    {
+                        texte: "Négocier des tablettes reconditionnées libres",
+                        budget: -300,
+                        co2: 100,
+                        resistance: 35,
+                        message: "Le meilleur des deux mondes ! Tablettes pour tous, écolo et libre ! 🎯"
+                    }
+                ]
+            },
+            {
+                id: 4,
+                titre: "📧 La Suite Bureautique",
+                emoji: "📄",
+                texte: "Les licences Microsoft Office expirent. 800€ par an pour les renouveler. Que faire ?",
+                choix: [
+                    {
+                        texte: "Renouveler les licences Microsoft",
+                        budget: -800,
+                        co2: 50,
+                        resistance: -15,
+                        message: "Facile mais coûteux. Chaque année, la même facture..."
+                    },
+                    {
+                        texte: "Passer à LibreOffice",
+                        budget: 0,
+                        co2: 0,
+                        resistance: 30,
+                        message: "Gratuit, compatible et libre ! Formation en 2h et c'est parti ! 🚀"
+                    },
+                    {
+                        texte: "Utiliser des outils en ligne collaboratifs libres",
+                        budget: -100,
+                        co2: 20,
+                        resistance: 25,
+                        message: "OnlyOffice + Nextcloud = travail collaboratif sans GAFAM ! 👏"
+                    }
+                ]
+            },
+            {
+                id: 5,
+                titre: "🎓 Formation des Profs",
+                emoji: "👨‍🏫",
+                texte: "Les enseignants sont perdus avec tous ces changements. Certains réclament une formation, d'autres résistent. Budget formation disponible ?",
+                choix: [
+                    {
+                        texte: "Former tout le monde au libre",
+                        budget: -600,
+                        co2: 0,
+                        resistance: 40,
+                        message: "Investissement payant ! Les profs deviennent autonomes et ambassadeurs du libre ! 🎖️"
+                    },
+                    {
+                        texte: "Formation minimale (les volontaires)",
+                        budget: -200,
+                        co2: 0,
+                        resistance: 15,
+                        message: "Un bon début, mais certains restent sur la touche..."
+                    },
+                    {
+                        texte: "Pas de formation (on se débrouille)",
+                        budget: 0,
+                        co2: 0,
+                        resistance: -20,
+                        message: "Mauvaise idée... Frustration montante et retour en arrière possible ! ⚠️"
+                    }
+                ]
+            },
+            {
+                id: 6,
+                titre: "🔒 Sécurité et Mots de Passe",
+                emoji: "🔐",
+                texte: "Un audit révèle que 60% des mots de passe sont '123456'. Il faut agir ! Une solution ?",
+                choix: [
+                    {
+                        texte: "Acheter un gestionnaire commercial",
+                        budget: -400,
+                        co2: 30,
+                        resistance: -10,
+                        message: "Efficace mais dépendant. Et ces données stockées où exactement ? 🤔"
+                    },
+                    {
+                        texte: "Déployer KeePass/Bitwarden",
+                        budget: -50,
+                        co2: 5,
+                        resistance: 30,
+                        message: "Open source, hébergé localement. Sécurité ET souveraineté ! 🔒"
+                    },
+                    {
+                        texte: "Campagne de sensibilisation seulement",
+                        budget: -100,
+                        co2: 0,
+                        resistance: 10,
+                        message: "Un bon début, mais insuffisant sans outils..."
+                    }
+                ]
+            },
+            {
+                id: 7,
+                titre: "🎮 Club Informatique",
+                emoji: "🏆",
+                texte: "Des élèves passionnés veulent créer un club Linux. Ils pourraient même aider à reconditionner les vieux PC ! Budget nécessaire pour le matériel et l'encadrement.",
+                choix: [
+                    {
+                        texte: "Financer généreusement le club",
+                        budget: -400,
+                        co2: 0,
+                        resistance: 45,
+                        message: "Le club devient une pépinière de talents ! Ils réparent, forment et inspirent ! 🌟"
+                    },
+                    {
+                        texte: "Budget minimal (débrouillardise)",
+                        budget: -150,
+                        co2: 0,
+                        resistance: 25,
+                        message: "Ça fonctionne mais ils pourraient faire tellement plus..."
+                    },
+                    {
+                        texte: "Refuser (pas le budget)",
+                        budget: 0,
+                        co2: 0,
+                        resistance: -15,
+                        message: "Les élèves sont déçus. Occasion manquée de créer une communauté... 😔"
+                    }
+                ]
+            },
+            {
+                id: 8,
+                titre: "📊 Visioconférence",
+                emoji: "📹",
+                texte: "Post-Covid, les visios sont devenues essentielles. Zoom facture 2000€/an. Alternatives ?",
+                choix: [
+                    {
+                        texte: "Rester sur Zoom",
+                        budget: -2000,
+                        co2: 100,
+                        resistance: -25,
+                        message: "Pratique mais cher. Et vos conversations transitent par les USA... 🇺🇸"
+                    },
+                    {
+                        texte: "Déployer Jitsi Meet en local",
+                        budget: -300,
+                        co2: 20,
+                        resistance: 40,
+                        message: "100% souverain, gratuit et performant ! Les profs valident ! 🎥"
+                    },
+                    {
+                        texte: "Utiliser BigBlueButton (Forge)",
+                        budget: -200,
+                        co2: 15,
+                        resistance: 45,
+                        message: "Parfait pour l'éducation ! Hébergé par le ministère, pédagogique ! 🎓"
+                    }
+                ]
+            },
+            {
+                id: 9,
+                titre: "♻️ Don de Matériel",
+                emoji: "🎁",
+                texte: "Une entreprise locale ferme et propose de donner 30 PC de 5 ans. Gratuits mais à reconditionner.",
+                choix: [
+                    {
+                        texte: "Accepter et reconditionner avec Linux",
+                        budget: -400,
+                        co2: -200,
+                        resistance: 35,
+                        message: "Économie circulaire ! Le club les retape, ils repartent pour 5 ans ! ♻️"
+                    },
+                    {
+                        texte: "Refuser (trop vieux)",
+                        budget: 0,
+                        co2: 300,
+                        resistance: -10,
+                        message: "30 PC à la décharge... Quel gâchis. L'entreprise est déçue. 🗑️"
+                    }
+                ]
+            },
+            {
+                id: 10,
+                titre: "🌐 Connexion Internet",
+                emoji: "📡",
+                texte: "Le FAI actuel coûte cher. Une box 4G ferait l'affaire et coûterait 40% moins cher, mais moins stable.",
+                choix: [
+                    {
+                        texte: "Garder la fibre premium",
+                        budget: -1200,
+                        co2: 50,
+                        resistance: 0,
+                        message: "Stable et rapide. Mais cher pour ce que c'est..."
+                    },
+                    {
+                        texte: "Passer en 4G économique",
+                        budget: -700,
+                        co2: 30,
+                        resistance: 5,
+                        message: "Économie réalisée ! Quelques ralentissements mais gérable. 📶"
+                    },
+                    {
+                        texte: "Négocier avec le FAI un tarif éducation",
+                        budget: -900,
+                        co2: 40,
+                        resistance: 10,
+                        message: "Belle négociation ! Compromis idéal qualité/prix. 🤝"
+                    }
+                ]
+            },
+            {
+                id: 11,
+                titre: "📚 Manuels Numériques",
+                emoji: "📖",
+                texte: "Les éditeurs proposent des manuels numériques : 15€/élève/an. Alternative : ressources libres.",
+                choix: [
+                    {
+                        texte: "Acheter les manuels numériques",
+                        budget: -3000,
+                        co2: 50,
+                        resistance: -20,
+                        message: "Pratique mais abonnement éternel. DRM et dépendance... 📕"
+                    },
+                    {
+                        texte: "Utiliser Wikiversité + ressources libres",
+                        budget: 0,
+                        co2: 0,
+                        resistance: 40,
+                        message: "Gratuit, libre, collaboratif ! Les profs contribuent même ! 📚"
+                    },
+                    {
+                        texte: "Hybride : mix manuel papier + libre",
+                        budget: -1000,
+                        co2: 100,
+                        resistance: 15,
+                        message: "Compromis acceptable. Tout le monde y trouve son compte. ⚖️"
+                    }
+                ]
+            },
+            {
+                id: 12,
+                titre: "🏁 Bilan de l'Année",
+                emoji: "🎯",
+                texte: "L'année touche à sa fin. Le rectorat évalue votre gestion. Votre bilan final déterminera l'avenir du lycée...",
+                choix: [
+                    {
+                        texte: "Présenter les résultats",
+                        budget: 0,
+                        co2: 0,
+                        resistance: 0,
+                        message: "C'est l'heure du verdict..."
+                    }
+                ]
+            }
+        ];
+
+        // ========== FONCTIONS D'AFFICHAGE ==========
+        function updateStats() {
+            // Budget
+            document.getElementById('budget-value').textContent = `${gameState.budget.toLocaleString()} €`;
+            const budgetPercent = Math.max(0, Math.min(100, (gameState.budget / GAME_CONFIG.maxBudget) * 100));
+            document.getElementById('budget-bar').style.width = budgetPercent + '%';
+
+            // CO2
+            document.getElementById('co2-value').textContent = `${gameState.co2} kg`;
+            const co2Percent = Math.min(100, (gameState.co2 / GAME_CONFIG.maxCO2) * 100);
+            document.getElementById('co2-bar').style.width = co2Percent + '%';
+
+            // Résistance
+            document.getElementById('resistance-value').textContent = `${gameState.resistance}%`;
+            const resistancePercent = Math.max(0, Math.min(100, gameState.resistance));
+            document.getElementById('resistance-bar').style.width = resistancePercent + '%';
+
+            // Tour
+            document.getElementById('current-turn').textContent = gameState.currentTurn;
+        }
+
+        function displayMission() {
+            const mission = missions[gameState.currentMissionIndex];
+
+            document.getElementById('mission-image').textContent = mission.emoji;
+            document.getElementById('mission-title').textContent = mission.titre;
+            document.getElementById('mission-text').textContent = mission.texte;
+
+            const choicesContainer = document.getElementById('choices-container');
+            choicesContainer.innerHTML = '';
+
+            mission.choix.forEach((choix, index) => {
+                const button = document.createElement('button');
+                button.className = 'choice-button';
+
+                let impactsHTML = '<div class="choice-impacts">';
+                if (choix.budget !== 0) {
+                    const budgetClass = choix.budget > 0 ? 'positive' : 'negative';
+                    impactsHTML += `<span class="impact ${budgetClass}">💰 ${choix.budget > 0 ? '+' : ''}${choix.budget}€</span>`;
+                }
+                if (choix.co2 !== 0) {
+                    const co2Class = choix.co2 > 0 ? 'negative' : 'positive';
+                    impactsHTML += `<span class="impact ${co2Class}">🌍 ${choix.co2 > 0 ? '+' : ''}${choix.co2}kg CO2</span>`;
+                }
+                if (choix.resistance !== 0) {
+                    const resClass = choix.resistance > 0 ? 'positive' : 'negative';
+                    impactsHTML += `<span class="impact ${resClass}">✊ ${choix.resistance > 0 ? '+' : ''}${choix.resistance}%</span>`;
+                }
+                impactsHTML += '</div>';
+
+                button.innerHTML = `
+                    <div class="choice-text">${choix.texte}</div>
+                    ${impactsHTML}
+                `;
+
+                button.onclick = () => makeChoice(index);
+                choicesContainer.appendChild(button);
+            });
+        }
+
+        function makeChoice(choiceIndex) {
+            const mission = missions[gameState.currentMissionIndex];
+            const choix = mission.choix[choiceIndex];
+
+            // Appliquer les conséquences
+            gameState.budget += choix.budget;
+            gameState.co2 += choix.co2;
+            gameState.resistance += choix.resistance;
+
+            // Limiter les valeurs
+            gameState.resistance = Math.max(0, Math.min(100, gameState.resistance));
+            gameState.co2 = Math.max(0, gameState.co2);
+
+            // Mettre à jour l'affichage
+            updateStats();
+
+            // Afficher le feedback
+            showFeedback(choix.message);
+
+            // Vérifier les conditions de game over
+            setTimeout(() => {
+                if (checkGameOver()) {
+                    return;
+                }
+
+                // Passer au tour suivant
+                gameState.currentTurn++;
+                gameState.currentMissionIndex++;
+
+                if (gameState.currentMissionIndex >= missions.length) {
+                    endGame('victory');
+                } else {
+                    displayMission();
+                    showFeedback('Prochaine mission...', 'success');
+                }
+            }, 3000);
+        }
+
+        function showFeedback(message, type = 'success') {
+            const feedbackEl = document.getElementById('feedback-message');
+            feedbackEl.textContent = message;
+            feedbackEl.className = 'feedback-message ' + type;
+        }
+
+        function checkGameOver() {
+            if (gameState.budget <= 0) {
+                endGame('bankruptcy');
+                return true;
+            }
+            if (gameState.co2 >= GAME_CONFIG.maxCO2) {
+                endGame('climate');
+                return true;
+            }
+            if (gameState.resistance <= 0) {
+                endGame('assimilation');
+                return true;
+            }
+            return false;
+        }
+
+        function endGame(reason) {
+            gameState.gameOver = true;
+
+            let title, message, emoji;
+            const achievements = calculateAchievements();
+
+            switch (reason) {
+                case 'victory':
+                    emoji = '🎉';
+                    title = 'Victoire ! Année Réussie !';
+                    message = `Bravo ! Vous avez terminé l'année scolaire avec brio !<br><br>
+                        <strong>Statistiques finales :</strong><br>
+                        💰 Budget restant : ${gameState.budget}€<br>
+                        🌍 CO2 émis : ${gameState.co2}kg<br>
+                        ✊ Résistance : ${gameState.resistance}%<br><br>
+                        ${getVictoryMessage()}`;
+                    break;
+                case 'bankruptcy':
+                    emoji = '💸';
+                    title = 'Faillite !';
+                    message = 'Le lycée est en faillite... Les dépenses ont été trop importantes. Le rectorat reprend la main.';
+                    break;
+                case 'climate':
+                    emoji = '🌡️';
+                    title = 'Catastrophe Climatique !';
+                    message = 'L\'empreinte carbone du lycée est devenue insoutenable. La planète ne peut plus suivre...';
+                    break;
+                case 'assimilation':
+                    emoji = '🏢';
+                    title = 'Assimilé par l\'Empire !';
+                    message = 'Le lycée a perdu toute indépendance. Vous êtes maintenant totalement dépendant des Big Tech...';
+                    break;
+            }
+
+            const gameContent = document.getElementById('game-content');
+            gameContent.innerHTML = `
+                <div class="game-over">
+                    <div style="font-size: 5rem; margin-bottom: 20px;">${emoji}</div>
+                    <h2>${title}</h2>
+                    <p>${message}</p>
+                    ${achievements.length > 0 ? `
+                        <div class="achievements">
+                            <h3>🏆 Succès Débloqués</h3>
+                            ${achievements.map(a => `<div class="achievement">${a.emoji} ${a.name}: ${a.description}</div>`).join('')}
+                        </div>
+                    ` : ''}
+                    <button class="restart-button" onclick="restartGame()">🔄 Recommencer</button>
+                </div>
+            `;
+        }
+
+        function getVictoryMessage() {
+            if (gameState.resistance >= 80 && gameState.budget >= 5000 && gameState.co2 < 1000) {
+                return '🌟 <strong>Victoire Parfaite !</strong> Vous êtes un modèle pour tous les établissements NIRD !';
+            } else if (gameState.resistance >= 70) {
+                return '💪 <strong>Village Résistant !</strong> Votre lycée est un exemple d\'indépendance numérique !';
+            } else if (gameState.budget >= 7000) {
+                return '💰 <strong>Gestionnaire Prudent !</strong> Vous avez su préserver les finances tout en innovant !';
+            } else if (gameState.co2 < 1500) {
+                return '🌱 <strong>Héros Écologique !</strong> Votre empreinte carbone est exemplaire !';
+            } else {
+                return '✅ Vous avez réussi à maintenir l\'équilibre. Continuez sur cette voie !';
+            }
+        }
+
+        function calculateAchievements() {
+            const achievements = [];
+
+            if (gameState.resistance >= 100) {
+                achievements.push({
+                    emoji: '🛡️',
+                    name: 'Héros du Libre',
+                    description: 'Atteindre 100% de résistance'
+                });
+            }
+
+            if (gameState.budget >= GAME_CONFIG.initialBudget) {
+                achievements.push({
+                    emoji: '🐿️',
+                    name: 'L\'Écureuil',
+                    description: 'Finir avec plus d\'argent qu\'au début'
+                });
+            }
+
+            if (gameState.co2 < 500) {
+                achievements.push({
+                    emoji: '🌍',
+                    name: 'Sauveur de la Planète',
+                    description: 'Maintenir l\'empreinte CO2 sous 500kg'
+                });
+            }
+
+            if (gameState.resistance >= 80 && gameState.co2 < 1000) {
+                achievements.push({
+                    emoji: '⚖️',
+                    name: 'Équilibre Parfait',
+                    description: 'Alliance de résistance et d\'écologie'
+                });
+            }
+
+            if (gameState.budget >= 8000 && gameState.resistance >= 70) {
+                achievements.push({
+                    emoji: '💎',
+                    name: 'Gestion Exemplaire',
+                    description: 'Budget élevé et forte résistance'
+                });
+            }
+
+            return achievements;
+        }
+
+        function restartGame() {
+            gameState = {
+                budget: GAME_CONFIG.initialBudget,
+                co2: 0,
+                resistance: GAME_CONFIG.initialResistance,
+                currentTurn: 1,
+                currentMissionIndex: 0,
+                gameOver: false,
+                achievements: []
+            };
+
+            document.getElementById('game-content').innerHTML = `
+                <div class="mission-container">
+                    <div class="turn-info">
+                        <strong>Tour <span id="current-turn">1</span> / <span id="total-turns">12</span></strong>
+                    </div>
+                    <div class="mission-image" id="mission-image">🏫</div>
+                    <h2 class="mission-title" id="mission-title">Chargement...</h2>
+                    <div class="mission-text" id="mission-text">
+                        Préparez-vous à gérer votre lycée...
+                    </div>
+                    <div class="choices-container" id="choices-container">
+                    </div>
+                </div>
+                <div class="feedback-container">
+                    <div class="feedback-message" id="feedback-message">
+                        Bienvenue ! Faites vos choix avec sagesse...
+                    </div>
+                </div>
+            `;
+
+            updateStats();
+            displayMission();
+        }
+
+        // ========== DÉMARRAGE DU JEU ==========
+        window.onload = function () {
+            updateStats();
+            displayMission();
+        };
+    </script>
+</body>
+
+</html>

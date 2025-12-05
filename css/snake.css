@@ -1,0 +1,46 @@
+body {
+    margin: 0;
+    padding: 0;
+    background-color: #262632;
+    font-family: monospace;
+    color: white;
+}
+
+main{
+    display:flex;
+    position: relative;
+    width: 800px;
+    margin: 50px auto;
+}
+
+#gameContainer {
+    position: relative;
+    background-size: cover;
+    width: 400px;
+    height: 400px;
+    margin: 50px auto;
+
+}
+
+canvas {
+    display: block;
+    margin: 0 auto;
+    margin-top: 100px;
+    background-color: #262632;
+}
+
+th {
+    text-align: left;
+}
+
+.keys{
+    text-decoration: none;
+    margin: auto;
+    width: 400;
+}
+
+caption{
+  caption-side: top;
+  padding: 10px;
+  font-weight: bold;
+}

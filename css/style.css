@@ -1,0 +1,1059 @@
+html {
+    height: 100%;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    min-height: 100%;
+    display: flex;
+    flex-direction: column;
+    color: #333;
+    line-height: 1.6;
+}
+
+header{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #ffffff;
+    padding: 1rem 2rem;
+    margin: 0;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.logo {
+    height: 50px;
+    width: auto;
+}
+
+.navbar {
+    display: flex;
+    flex-direction: row;
+    gap: 2rem;
+    margin: 0;
+    padding: 0;
+}
+
+.navbar li {
+    list-style: none;
+    display: flex;
+    align-items: center;
+}
+
+.navbar a {
+    text-decoration: none;
+    color: #333;
+    padding: 0.5rem 1rem;
+    transition: all 0.3s ease;
+    border-radius: 5px;
+    font-weight: 500;
+}
+
+.navbar a:hover {
+    background-color: #4CAF50;
+    color: white;
+}
+
+/* Main Content */
+main {
+    flex: 1;
+}
+
+.section {
+    padding: 4rem 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.section-alt {
+    background-color: #f8f8f8;
+}
+
+/* Hero Section */
+.hero {
+    text-align: center;
+    padding: 5rem 2rem;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+}
+
+.hero h1 {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+}
+
+.hero .subtitle {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+}
+
+.hero p {
+    font-size: 1.1rem;
+    max-width: 800px;
+    margin: 0 auto 2rem;
+    line-height: 1.8;
+}
+
+/* Values Section */
+h2 {
+    text-align: center;
+    font-size: 2.5rem;
+    margin-bottom: 3rem;
+    color: #333;
+}
+
+.values-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    margin-top: 2rem;
+}
+
+
+
+.value-card {
+    background: white;
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    text-align: center;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    border: 3px solid transparent;
+}
+
+.value-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+}
+
+.value-card.active {
+    border-color: #667eea;
+    background: linear-gradient(135deg, #f8f9ff 0%, #f0f2ff 100%);
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(102, 126, 234, 0.3);
+}
+
+.value-icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+}
+
+.value-card h3 {
+    color: #667eea;
+    margin-bottom: 1rem;
+    font-size: 1.5rem;
+}
+
+/* Detail Sections */
+.detail-section {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.5s ease-out, opacity 0.3s ease-out, margin 0.3s ease-out;
+    opacity: 0;
+    margin-top: 0;
+}
+
+.detail-section.active {
+    max-height: 800px;
+    opacity: 1;
+    margin-top: 2rem;
+}
+
+.detail-content {
+    background: linear-gradient(135deg, #f8f9ff 0%, #ffffff 100%);
+    padding: 2rem;
+    border-radius: 10px;
+    border-left: 5px solid #667eea;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    animation: slideIn 0.5s ease-out;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateY(-20px);
+        opacity:     0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.detail-content h3 {
+    color: #667eea;
+    font-size: 2rem;
+    margin-bottom: 1rem;
+}
+
+.detail-content ul {
+    list-style: none;
+    padding-left: 0;
+}
+
+.detail-content ul li {
+    padding: 0.5rem 0;
+    padding-left: 2rem;
+    position: relative;
+}
+
+.detail-content ul li:before {
+    content: "✓";
+    position: absolute;
+    left: 0;
+    color: #4CAF50;
+    font-weight: bold;
+    font-size: 1.2rem;
+}
+
+.detail-content p {
+    font-size: 1.1rem;
+    line-height: 1.8;
+    color: #555;
+}
+
+/* Cards */
+.card-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 2rem;
+    margin-top: 2rem;
+}
+
+.card {
+    background: white;
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    text-align: center;
+    transition: transform 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+}
+
+.card h3 {
+    color: #667eea;
+    margin-bottom: 1rem;
+}
+
+/* Footer */
+footer {
+    background-color: #333;
+    color: white;
+    padding: 1.5rem 0;
+    text-align: center;
+    margin-top: auto;
+    width: 100%;
+}
+
+footer p {
+    margin: 0;
+}
+
+/* ==========================================
+   STYLES POUR LES ACCORDÉONS (NOUVEAUX)
+   ========================================== */
+
+/* Section d'introduction des conseils */
+.introduction-Conseils {
+    max-width: 1200px;
+    margin: 2rem auto;
+    padding: 2rem;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border-radius: 15px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.introduction-Conseils h2 {
+    color: white;
+    font-size: 2.5rem;
+    margin-bottom: 1.5rem;
+    text-align: center;
+}
+
+.introduction-Conseils h3 {
+    color: white;
+    font-size: 1.5rem;
+    margin-top: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+.introduction-Conseils ul {
+    list-style: none;
+    padding-left: 0;
+    font-size: 1.2rem;
+}
+
+.introduction-Conseils ul li {
+    padding: 0.5rem 0;
+    padding-left: 2rem;
+    position: relative;
+}
+
+.introduction-Conseils ul li:before {
+    content: "✓";
+    position: absolute;
+    left: 0;
+    color: #4CAF50;
+    font-weight: bold;
+    font-size: 1.5rem;
+}
+
+/* Conteneur d'accordéon */
+.accordion-item {
+    width: 70%;
+    margin: 1.5rem auto;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    transition: all 0.3s ease;
+}
+
+.accordion-item:hover {
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+/* En-tête de l'accordéon (bouton) */
+.accordion-header {
+    width: 100%;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    padding: 1.5rem 2rem;
+    font-size: 1.5rem;
+    font-weight: 600;
+    text-align: left;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: all 0.3s ease;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.accordion-header:hover {
+    background: linear-gradient(135deg, #7688f0 0%, #8656b2 100%);
+    padding-left: 2.5rem;
+}
+
+.accordion-header:focus {
+    outline: 3px solid #4CAF50;
+    outline-offset: 2px;
+}
+
+/* Icône +/- */
+.accordion-icon {
+    font-size: 2rem;
+    font-weight: bold;
+    min-width: 30px;
+    text-align: center;
+    transition: transform 0.3s ease;
+}
+
+.accordion-header:hover .accordion-icon {
+    transform: scale(1.2);
+}
+
+/* Contenu de l'accordéon */
+.accordion-content {
+    background-color: white;
+    padding: 2rem;
+    border-top: 3px solid #667eea;
+    animation: slideDown 0.3s ease-out;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Sections internes de l'accordéon */
+.accordion-content section {
+    margin-bottom: 2rem;
+}
+
+.accordion-content section:last-child {
+    margin-bottom: 0;
+}
+
+.description {
+    background: linear-gradient(135deg, #fff5f5 0%, #ffffff 100%);
+    padding: 1.5rem;
+    border-radius: 10px;
+    border-left: 5px solid #e74c3c;
+}
+
+.Solution {
+    background: linear-gradient(135deg, #f0fff4 0%, #ffffff 100%);
+    padding: 1.5rem;
+    border-radius: 10px;
+    border-left: 5px solid #4CAF50;
+}
+
+.saviez-vous {
+    background: linear-gradient(135deg, #fff9e6 0%, #ffffff 100%);
+    padding: 1.5rem;
+    border-radius: 10px;
+    border-left: 5px solid #f39c12;
+}
+
+/* Titres dans les sections */
+.accordion-content strong {
+    color: #667eea;
+    font-size: 1.3rem;
+    display: block;
+    margin-bottom: 0.5rem;
+}
+
+.description strong {
+    color: #e74c3c;
+}
+
+.Solution strong {
+    color: #4CAF50;
+}
+
+.saviez-vous strong {
+    color: #f39c12;
+}
+
+/* Listes dans l'accordéon */
+.accordion-content ul {
+    list-style: none;
+    padding-left: 0;
+    margin-top: 1rem;
+}
+
+.accordion-content ul li {
+    padding: 0.8rem 0;
+    padding-left: 2rem;
+    position: relative;
+    line-height: 1.6;
+}
+
+.accordion-content ul li:before {
+    content: "▸";
+    position: absolute;
+    left: 0;
+    color: #667eea;
+    font-weight: bold;
+    font-size: 1.2rem;
+}
+
+.accordion-content ul li p {
+    margin: 0.5rem 0;
+}
+
+.accordion-content ul li strong {
+    display: inline;
+    font-size: 1.1rem;
+    color: #333;
+}
+
+.btn-conseil{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+
+/* Boutons Tout ouvrir / Tout fermer */
+button[onclick="openAll()"],
+button[onclick="closeAll()"] {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    padding: 1rem 2rem;
+    font-size: 1rem;
+    font-weight: 600;
+    border-radius: 8px;
+    cursor: pointer;
+    margin: 2rem 0.5rem;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+button[onclick="openAll()"]:hover,
+button[onclick="closeAll()"]:hover {
+    background: linear-gradient(135deg, #7688f0 0%, #8656b2 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+}
+
+button[onclick="openAll()"]:active,
+button[onclick="closeAll()"]:active {
+    transform: translateY(0);
+}
+
+/* Conteneur des boutons */
+body > div:last-of-type {
+    text-align: center;
+    max-width: 1200px;
+    margin: 2rem auto;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .accordion-header {
+        font-size: 1.2rem;
+        padding: 1rem 1.5rem;
+    }
+    
+    .accordion-content {
+        padding: 1.5rem;
+    }
+    
+    .introduction-Conseils {
+        padding: 1.5rem;
+    }
+    
+    .introduction-Conseils h2 {
+        font-size: 2rem;
+    }
+    
+    .introduction-Conseils h3 {
+        font-size: 1.2rem;
+    }
+    
+    button[onclick="openAll()"],
+    button[onclick="closeAll()"] {
+        display: block;
+        width: calc(100% - 2rem);
+        margin: 1rem;
+    }
+}
+
+
+
+
+/* From Uiverse.io by rishichawda */ 
+/* The switch - the box around the slider */
+#theme-toggle-button {
+  font-size: 8px;
+  position: relative;
+  display: inline-block;
+  width: 7em;
+  cursor: pointer;
+}
+
+/* Hide default HTML checkbox */
+#toggle {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+#container,
+#patches,
+#stars,
+#button,
+#sun,
+#moon,
+#cloud {
+  transition-property: all;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 0.25s;
+}
+
+/* night sky background */
+#toggle:checked + svg #container {
+  fill: #2b4360;
+}
+
+/* move button to right when checked */
+#toggle:checked + svg #button {
+  transform: translate(28px, 2.333px);
+}
+
+/* show/hide sun and moon based on checkbox state */
+#sun {
+  opacity: 1;
+}
+
+#toggle:checked + svg #sun {
+  opacity: 0;
+}
+
+#moon {
+  opacity: 0;
+}
+
+#toggle:checked + svg #moon {
+  opacity: 1;
+}
+
+/* show or hide background items on checkbox state */
+#cloud {
+  opacity: 1;
+}
+
+#toggle:checked + svg #cloud {
+  opacity: 0;
+}
+
+#stars {
+  opacity: 0;
+}
+
+#toggle:checked + svg #stars {
+  opacity: 1;
+}
+
+/*--------------------------------------------------*/
+
+/* =============================================
+   MODE SOMBRE - STYLES EXISTANTS
+   ============================================= */
+
+/* Transition douce pour le changement de thème */
+body,
+header,
+.accordion-item,
+.accordion-content,
+.introduction-Conseils,
+.card,
+.value-card,
+.detail-content,
+.description,
+.Solution,
+.saviez-vous,
+.quiz-section,
+.quiz-container,
+.question-card,
+.answer-btn,
+.explanation-box,
+.quiz-results {
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Mode sombre activé */
+body.dark-mode {
+    background-color: #1a1a1a!important;
+    color: #ffffff!important;
+}
+
+/* Header en mode sombre */
+body.dark-mode header {
+    background-color: #2d2d2d!important;
+    box-shadow: 0 2px 5px rgba(255,255,255,0.1);
+}
+
+body.dark-mode .navbar a {
+    color: #ffffff;
+}
+
+body.dark-mode .navbar a:hover {
+    background-color: #4CAF50;
+    color: white;
+}
+
+/* Sections en mode sombre */
+body.dark-mode .section-alt {
+    background-color: #252525;
+}
+
+/* Hero section en mode sombre (garder le gradient) */
+body.dark-mode .hero {
+    background: linear-gradient(135deg, #4a5a9a 0%, #5a3b72 100%);
+}
+
+/* Cards en mode sombre */
+body.dark-mode .value-card {
+    background-color: #2d2d2d;
+    color: #ffffff;
+}
+
+body.dark-mode .value-card.active {
+    background: linear-gradient(135deg, #3a3a5a 0%, #4a4a6a 100%);
+}
+
+body.dark-mode .card {
+    background-color: #2d2d2d;
+    color: #ffffff;
+}
+
+/* Titres en mode sombre */
+body.dark-mode h1,
+body.dark-mode h2,
+body.dark-mode h3,
+body.dark-mode h4 {
+    color: #ffffff;
+}
+
+body.dark-mode .value-card h3,
+body.dark-mode .card h3 {
+    color: #8fa3ff;
+}
+
+/* Detail content en mode sombre */
+body.dark-mode .detail-content {
+    background: linear-gradient(135deg, #2d2d3d 0%, #3a3a3a 100%);
+    color: #ffffff;
+}
+
+body.dark-mode .detail-content h3 {
+    color: #8fa3ff;
+}
+
+body.dark-mode .detail-content p {
+    color: #e0e0e0;
+}
+
+/* Introduction conseils en mode sombre */
+body.dark-mode .introduction-Conseils {
+    background: linear-gradient(135deg, #4a5a9a 0%, #5a3b72 100%);
+    color: #ffffff;
+}
+
+body.dark-mode .introduction-Conseils h2,
+body.dark-mode .introduction-Conseils h3 {
+    color: #ffffff;
+}
+
+/* Accordéons en mode sombre */
+body.dark-mode .accordion-item {
+    box-shadow: 0 2px 8px rgba(255,255,255,0.1);
+}
+
+body.dark-mode .accordion-header {
+    background: linear-gradient(135deg, #4a5a9a 0%, #5a3b72 100%);
+}
+
+body.dark-mode .accordion-header:hover {
+    background: linear-gradient(135deg, #5a6aaa 0%, #6a4b82 100%);
+}
+
+body.dark-mode .accordion-content {
+    background-color: #2d2d2d;
+    color: #ffffff;
+    border-top: 3px solid #8fa3ff;
+}
+
+/* Sections internes de l'accordéon en mode sombre */
+body.dark-mode .description {
+    background: linear-gradient(135deg, #3d2d2d 0%, #2d2d2d 100%);
+    border-left: 5px solid #ff6b6b;
+}
+
+body.dark-mode .description strong {
+    color: #ff6b6b;
+}
+
+body.dark-mode .Solution {
+    background: linear-gradient(135deg, #2d3d2d 0%, #2d2d2d 100%);
+    border-left: 5px solid #6bff6b;
+}
+
+body.dark-mode .Solution strong {
+    color: #6bff6b;
+}
+
+body.dark-mode .saviez-vous {
+    background: linear-gradient(135deg, #3d3d2d 0%, #2d2d2d 100%);
+    border-left: 5px solid #ffb347;
+}
+
+body.dark-mode .saviez-vous strong {
+    color: #ffb347;
+}
+
+/* Listes en mode sombre */
+body.dark-mode .accordion-content ul li:before {
+    color: #8fa3ff;
+}
+
+body.dark-mode .accordion-content ul li strong {
+    color: #e0e0e0;
+}
+
+body.dark-mode .accordion-content p {
+    color: #e0e0e0;
+}
+
+/* Boutons en mode sombre */
+body.dark-mode button[onclick="openAll()"],
+body.dark-mode button[onclick="closeAll()"] {
+    background: linear-gradient(135deg, #4a5a9a 0%, #5a3b72 100%);
+}
+
+body.dark-mode button[onclick="openAll()"]:hover,
+body.dark-mode button[onclick="closeAll()"]:hover {
+    background: linear-gradient(135deg, #5a6aaa 0%, #6a4b82 100%);
+}
+
+/* Footer en mode sombre */
+body.dark-mode footer {
+    background-color: #1a1a1a;
+    border-top: 1px solid #3a3a3a;
+}
+
+/* Loader en mode sombre */
+body.dark-mode #loader {
+    background: #1a1a1a;
+}
+
+
+#loader {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100vw; height: 100vh;
+    background: #ffffff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    transition: opacity 0.8s ease;
+}
+
+.logo-container {
+    position: relative;
+    width: 380px; /* taille à ajuster selon ton PNG */
+}
+
+/* Logo KLUB */
+.logo-loader {
+    width: 100%;
+    height: auto;
+    display: block;
+    animation: logoOpacity 2.5s ease-in-out forwards;
+}
+
+/* Abeille */
+.bee {
+    position: absolute;
+    width: 70px; /* taille de l’abeille */
+    right: -400px;
+    bottom: -250px;
+    animation: beeFlight 2.5s ease-in-out forwards;
+    offset-rotate: 0deg;
+}
+
+@keyframes logoOpacity {
+    0% {
+        opacity: 0;
+    }
+    30% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;            
+    }
+}
+
+@keyframes beeFlight {
+    0% {
+        offset-distance: 0%;
+        transform: scale(1);   /* taille normale */
+        opacity: 0;
+    }
+    40% {
+        opacity: 1;
+    }
+    50% {
+        transform: scale(1);   /* taille normale jusqu'à 70% */
+        opacity: 2;
+    }
+    100% {
+        offset-distance: 100%;
+        transform: scale(0);   /* rétrécit jusqu’à 0 */
+        opacity: 0;            /* disparaît */
+    }
+}
+
+/* Trajectoire courbe (S-curve très fluide) */
+.bee {
+    offset-path: path(
+        "M 50 50 C 0 0, -150 -40, -280 -140 C -330 -170, -360 -230, -390 -260"
+    );
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.15); opacity: 0.6; }
+    100% { transform: scale(1); opacity: 1; }
+}
+/* =============================================
+   MODE SOMBRE - STYLES POUR LE QUIZ (NOUVEAUX)
+   ============================================= */
+
+/* Section Quiz en mode sombre */
+body.dark-mode .quiz-section {
+    background-color: #1a1a1a;
+}
+
+/* En-tête du quiz en mode sombre */
+body.dark-mode .quiz-header {
+    background: linear-gradient(135deg, #4a5a9a 0%, #5a3b72 100%);
+    color: #ffffff;
+}
+
+body.dark-mode .score-container {
+    color: #ffffff;
+}
+
+/* Cartes de questions en mode sombre */
+body.dark-mode .question-card {
+    background-color: #2d2d2d;
+    border: 1px solid #3a3a3a;
+    box-shadow: 0 2px 8px rgba(255,255,255,0.05);
+}
+
+body.dark-mode .question-card h3 {
+    color: #8fa3ff;
+}
+
+body.dark-mode .question-text {
+    color: #e0e0e0;
+}
+
+/* Boutons de réponses en mode sombre */
+body.dark-mode .answer-btn {
+    background-color: #3a3a3a;
+    color: #ffffff;
+    border: 2px solid #4a4a4a;
+}
+
+body.dark-mode .answer-btn:hover:not(.correct):not(.incorrect):not(:disabled) {
+    background-color: #4a4a4a;
+    border-color: #8fa3ff;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(143, 163, 255, 0.3);
+}
+
+/* Réponse correcte en mode sombre */
+body.dark-mode .answer-btn.correct {
+    background: linear-gradient(135deg, #2d5d2d 0%, #3d7d3d 100%);
+    border-color: #4CAF50;
+    color: #ffffff;
+}
+
+/* Réponse incorrecte en mode sombre */
+body.dark-mode .answer-btn.incorrect {
+    background: linear-gradient(135deg, #5d2d2d 0%, #7d3d3d 100%);
+    border-color: #f44336;
+    color: #ffffff;
+}
+
+/* Boutons désactivés en mode sombre */
+body.dark-mode .answer-btn:disabled {
+    background-color: #252525;
+    color: #666;
+    border-color: #333;
+}
+
+/* Boîte d'explication en mode sombre */
+body.dark-mode .explanation-box {
+    background: linear-gradient(135deg, #2d2d3d 0%, #3a3a3a 100%);
+    border-left: 4px solid #8fa3ff;
+}
+
+body.dark-mode .explanation-content {
+    color: #e0e0e0;
+}
+
+body.dark-mode .explanation-content strong {
+    color: #8fa3ff;
+}
+
+body.dark-mode .explanation-content p {
+    color: #d0d0d0;
+}
+
+/* Résultats du quiz en mode sombre */
+body.dark-mode .quiz-results {
+    background: linear-gradient(135deg, #2d2d3d 0%, #3a3a3a 100%);
+    color: #ffffff;
+}
+
+body.dark-mode .quiz-results h2 {
+    color: #ffffff;
+}
+
+body.dark-mode .final-score {
+    color: #8fa3ff;
+}
+
+body.dark-mode .result-message {
+    color: #e0e0e0;
+}
+
+/* Boutons du quiz en mode sombre */
+body.dark-mode .btn-primary {
+    background: linear-gradient(135deg, #4a5a9a 0%, #5a3b72 100%);
+    color: #ffffff;
+    border: none;
+}
+
+body.dark-mode .btn-primary:hover {
+    background: linear-gradient(135deg, #5a6aaa 0%, #6a4b82 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(143, 163, 255, 0.4);
+}
+
+/* Icônes et emojis restent visibles */
+body.dark-mode .question-card::before,
+body.dark-mode .quiz-results::before {
+    filter: brightness(1.2);
+}
+
+/* Amélioration de la lisibilité des textes */
+body.dark-mode .answers {
+    gap: 12px;
+}
+
+body.dark-mode .answer-btn {
+    font-weight: 500;
+}
+
+/* Style pour les badges de score */
+body.dark-mode .score-badge {
+    background-color: #3a3a3a;
+    color: #8fa3ff;
+    border: 2px solid #4a4a4a;
+}
+
+/* Animation de feedback en mode sombre */
+@keyframes darkPulse {
+    0%, 100% {
+        box-shadow: 0 0 0 0 rgba(143, 163, 255, 0.7);
+    }
+    50% {
+        box-shadow: 0 0 0 10px rgba(143, 163, 255, 0);
+    }
+}
+
+body.dark-mode .answer-btn.correct {
+    animation: darkPulse 0.6s ease-out;
+}
+
+/* Responsive en mode sombre */
+@media (max-width: 768px) {
+    body.dark-mode .quiz-container {
+        padding: 15px;
+    }
+    
+    body.dark-mode .question-card {
+        padding: 15px;
+    }
+    
+    body.dark-mode .answer-btn {
+        padding: 12px;
+        font-size: 0.95rem;
+    }
+}

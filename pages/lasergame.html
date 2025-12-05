@@ -1,0 +1,961 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NIRD Lasergame - Bataille Numérique</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            user-select: none;
+            /* Empêche la sélection de texte pendant le jeu */
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a2a6c 0%, #b21f1f 50%, #fdbb2d 100%);
+            /* Fond plus dynamique "arcade" */
+            min-height: 100vh;
+            overflow: hidden;
+            cursor: crosshair;
+            /* Curseur viseur */
+        }
+
+        /* Effet visuel sur le body quand on se fait toucher */
+        body.damage-effect {
+            animation: shake 0.5s cubic-bezier(.36, .07, .19, .97) both;
+            box-shadow: inset 0 0 50px rgba(255, 0, 0, 0.5);
+        }
+
+        @keyframes shake {
+
+            10%,
+            90% {
+                transform: translate3d(-1px, 0, 0);
+            }
+
+            20%,
+            80% {
+                transform: translate3d(2px, 0, 0);
+            }
+
+            30%,
+            50%,
+            70% {
+                transform: translate3d(-4px, 0, 0);
+            }
+
+            40%,
+            60% {
+                transform: translate3d(4px, 0, 0);
+            }
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: rgba(255, 255, 255, 0.95);
+            padding: 0.8rem 2rem;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            position: relative;
+            z-index: 1000;
+            border-bottom: 3px solid #667eea;
+        }
+
+        .home-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .home-btn:hover {
+            transform: scale(1.05);
+        }
+
+        .game-stats {
+            display: flex;
+            gap: 30px;
+            align-items: center;
+        }
+
+        .stat-item {
+            text-align: center;
+            background: rgba(255, 255, 255, 0.5);
+            padding: 5px 15px;
+            border-radius: 8px;
+        }
+
+        .stat-label {
+            font-size: 0.8rem;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: #2c3e50;
+        }
+
+        .game-container {
+            position: relative;
+            height: calc(100vh - 80px);
+            overflow: hidden;
+            width: 100%;
+        }
+
+        .target {
+            position: absolute;
+            width: 90px;
+            height: 90px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: crosshair;
+            transition: transform 0.2s ease;
+            animation: float 3s ease-in-out infinite;
+            z-index: 10;
+        }
+
+        .target:hover {
+            transform: scale(1.1);
+            filter: brightness(1.2);
+        }
+
+        .target:active {
+            transform: scale(0.9);
+        }
+
+        @keyframes float {
+
+            0%,
+            100% {
+                transform: translateY(0px) rotate(0deg);
+            }
+
+            50% {
+                transform: translateY(-15px) rotate(5deg);
+            }
+        }
+
+        .target-icon {
+            font-size: 3.5rem;
+            filter: drop-shadow(0 4px 4px rgba(0, 0, 0, 0.2));
+            transition: transform 0.2s;
+        }
+
+        .target-label {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            margin-top: -5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+            white-space: nowrap;
+        }
+
+        .target.good .target-label {
+            color: #27ae60;
+            border: 1px solid #27ae60;
+        }
+
+        .target.bad .target-label {
+            color: #c0392b;
+            border: 1px solid #c0392b;
+        }
+
+        .target.neutral .target-label {
+            color: #2980b9;
+            border: 1px solid #2980b9;
+        }
+
+        .hit-effect {
+            position: absolute;
+            pointer-events: none;
+            font-size: 2rem;
+            font-weight: 900;
+            animation: hitPop 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+            z-index: 20;
+            text-shadow: 2px 2px 0px white;
+        }
+
+        @keyframes hitPop {
+            0% {
+                opacity: 1;
+                transform: scale(0.5) translateY(0);
+            }
+
+            100% {
+                opacity: 0;
+                transform: scale(1.5) translateY(-80px);
+            }
+        }
+
+        .laser-beam {
+            position: absolute;
+            width: 4px;
+            height: 0;
+            background: linear-gradient(to bottom, #00ff00, transparent);
+            pointer-events: none;
+            animation: laserShoot 0.2s ease-out forwards;
+            transform-origin: top;
+            box-shadow: 0 0 10px #00ff00;
+            z-index: 5;
+        }
+
+        .laser-beam.miss {
+            background: linear-gradient(to bottom, #ff0000, transparent);
+            box-shadow: 0 0 10px #ff0000;
+        }
+
+        @keyframes laserShoot {
+            0% {
+                height: 0;
+                opacity: 1;
+            }
+
+            50% {
+                height: 100vh;
+                opacity: 0.8;
+            }
+
+            100% {
+                height: 100vh;
+                opacity: 0;
+            }
+        }
+
+        .enemy-laser {
+            position: absolute;
+            width: 6px;
+            height: 40px;
+            background: #ff0000;
+            pointer-events: none;
+            animation: enemyLaserShoot 0.4s linear forwards;
+            border-radius: 3px;
+            box-shadow: 0 0 15px #ff0000;
+            z-index: 15;
+        }
+
+        @keyframes enemyLaserShoot {
+            0% {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+
+            100% {
+                opacity: 0;
+                transform: translateY(600px) scale(1.5);
+            }
+        }
+
+        .health-bar {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(255, 255, 255, 0.5);
+            padding: 8px 15px;
+            border-radius: 10px;
+        }
+
+        .health-label {
+            font-weight: 700;
+            font-size: 0.75rem;
+            color: #333;
+            text-transform: uppercase;
+            white-space: nowrap;
+        }
+
+        .health-progress {
+            width: 150px;
+            height: 18px;
+            background: #333;
+            border-radius: 9px;
+            overflow: hidden;
+            border: 2px solid #fff;
+        }
+
+        .health-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #2ecc71, #27ae60);
+            transition: width 0.3s cubic-bezier(0.25, 0.1, 0.25, 1);
+        }
+
+        .health-fill.low {
+            background: linear-gradient(90deg, #e74c3c, #c0392b);
+            animation: pulseLow 0.5s infinite;
+        }
+
+        @keyframes pulseLow {
+            0% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.7;
+            }
+
+            100% {
+                opacity: 1;
+            }
+        }
+
+        .game-over-screen,
+        .start-screen,
+        .leaderboard-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(5px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            max-width: 600px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+            border: 4px solid #667eea;
+            animation: slideUp 0.4s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translateY(50px);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .modal-content h2 {
+            font-size: 2.5rem;
+            background: -webkit-linear-gradient(#667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 20px;
+        }
+
+        .mode-select {
+            display: flex;
+            gap: 15px;
+            margin: 25px 0;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .mode-btn {
+            background: white;
+            color: #333;
+            border: 2px solid #667eea;
+            padding: 15px 25px;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            flex: 1;
+            min-width: 140px;
+        }
+
+        .mode-btn:hover {
+            background: #667eea;
+            color: white;
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .leaderboard-entry {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 20px;
+            margin: 8px 0;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border-left: 5px solid #bdc3c7;
+            font-family: monospace;
+            font-size: 1.1rem;
+        }
+
+        .leaderboard-entry.top {
+            background: #fff8e1;
+            border-left-color: #f1c40f;
+        }
+
+        .combo-indicator {
+            position: fixed;
+            top: 40%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 5rem;
+            font-weight: 900;
+            color: #f1c40f;
+            text-shadow: 4px 4px 0 #d35400;
+            pointer-events: none;
+            animation: comboAnim 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+            z-index: 500;
+        }
+
+        @keyframes comboAnim {
+            0% {
+                opacity: 0;
+                transform: translate(-50%, -50%) scale(0.5) rotate(-10deg);
+            }
+
+            50% {
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(1.2) rotate(10deg);
+            }
+
+            100% {
+                opacity: 0;
+                transform: translate(-50%, -50%) scale(1) translateY(-100px);
+            }
+        }
+
+        .difficulty-indicator {
+            position: fixed;
+            top: 100px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            font-family: monospace;
+            border: 2px solid #333;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <a href="../index.html" class="home-btn">🏠 Accueil</a>
+        <div class="health-bar">
+            <div class="health-label">💚 Intégrité du Système: <span id="health-value">100</span>%</div>
+            <div class="health-progress">
+                <div class="health-fill" id="health-fill" style="width: 100%"></div>
+            </div>
+        </div>
+        <div class="game-stats">
+            <div class="stat-item">
+                <div class="stat-label">Score</div>
+                <div class="stat-value" id="score">0</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-label">Temps</div>
+                <div class="stat-value" id="timer">2:00</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-label">Combo</div>
+                <div class="stat-value" id="combo">x1</div>
+            </div>
+        </div>
+    </header>
+
+
+
+    <div class="difficulty-indicator">
+        <strong>Mode:</strong> <span id="mode-name">Classique</span><br>
+        <strong>Vague:</strong> <span id="wave">1</span>
+    </div>
+
+    <!-- Écran de démarrage -->
+    <div class="start-screen" id="start-screen">
+        <div class="modal-content">
+            <h2>🎮 NIRD Lasergame</h2>
+            <p>Éliminez les menaces Big Tech pour protéger le numérique libre !</p>
+            <div style="margin: 20px 0; text-align: left; padding: 20px; background: #f0f3ff; border-radius: 10px;">
+                <p><strong>🎯 Objectifs :</strong></p>
+                <ul style="list-style: none; line-height: 1.8;">
+                    <li>✅ Tirez sur les GAFAM (Big Tech, Traqueurs...) <strong style="color:green">+Points</strong></li>
+                    <li>❌ Protégez le Libre (Linux, Open Source...) <strong style="color:red">-Points & -Santé si
+                            touché</strong></li>
+                    <li>⚠️ Attention aux tirs ennemis !</li>
+                    <li>⚡ Enchaînez les tirs sur les ennemis pour faire des <strong>COMBOS</strong> !</li>
+                </ul>
+            </div>
+            <p><strong>Choisissez votre mission :</strong></p>
+            <div class="mode-select">
+                <button class="mode-btn" onclick="startGame('classic')">
+                    🎯 Classique<br>
+                    <small>2 min, équilibré</small>
+                </button>
+                <button class="mode-btn" onclick="startGame('survival')">
+                    ⚔️ Survie<br>
+                    <small>Infini, hardcore</small>
+                </button>
+                <button class="mode-btn" onclick="startGame('speedrun')">
+                    ⚡ Speedrun<br>
+                    <small>60s, frénétique</small>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Écran Game Over -->
+    <div class="game-over-screen hidden" id="game-over-screen">
+        <div class="modal-content">
+            <h2 id="game-over-title">🎮 Partie Terminée</h2>
+            <p id="game-over-message">Votre score final :</p>
+            <p style="font-size: 4rem; color: #667eea; font-weight: 900; margin: 10px 0;" id="final-score">0</p>
+            <div id="game-stats-detail"
+                style="background:#f9f9f9; padding:15px; border-radius:10px; margin-bottom:20px;"></div>
+            <div class="mode-select">
+                <button class="mode-btn" style="background:#2ecc71; color:white; border:none;"
+                    onclick="location.reload()">🔄 Rejouer</button>
+                <button class="mode-btn" onclick="showLeaderboard()">🏆 Scores</button>
+                <a href="../index.html" class="mode-btn"
+                    style="text-decoration: none; display:flex; align-items:center; justify-content:center;">🏠
+                    Quitter</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tableau des scores -->
+    <div class="leaderboard-screen hidden" id="leaderboard-screen">
+        <div class="modal-content" style="max-width: 600px;">
+            <h2>🏆 Hall of Fame</h2>
+            <div class="leaderboard" id="leaderboard-content" style="max-height: 300px; overflow-y: auto;">
+                <!-- Sera rempli dynamiquement -->
+            </div>
+            <div class="mode-select">
+                <button class="mode-btn" onclick="location.reload()">🔄 Rejouer</button>
+                <a href="../index.html" class="mode-btn"
+                    style="text-decoration: none; display:flex; align-items:center; justify-content:center;">🏠
+                    Retour</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="game-container" id="game-container">
+        <!-- Les cibles seront générées ici -->
+    </div>
+
+    <script>
+        // ========== CONFIGURATION ==========
+        const GAME_CONFIG = {
+            classic: { duration: 120, spawnRate: 1500, enemyShootRate: 3000, targetSpeed: 2000 },
+            survival: { duration: 9999, spawnRate: 1200, enemyShootRate: 2000, targetSpeed: 1500 },
+            speedrun: { duration: 60, spawnRate: 800, enemyShootRate: 4000, targetSpeed: 1000 }
+        };
+
+        const TARGETS = {
+            good: [
+                { emoji: '🐧', label: 'Linux', points: -15 },
+                { emoji: '🔓', label: 'Open Source', points: -15 },
+                { emoji: '♻️', label: 'Reconditionné', points: -12 },
+                { emoji: '🌱', label: 'Durable', points: -12 },
+                { emoji: '🛡️', label: 'Souverain', points: -15 },
+                { emoji: '🦊', label: 'Firefox', points: -10 },
+                { emoji: '💾', label: 'Backup Local', points: -10 }
+            ],
+            bad: [
+                { emoji: '🏢', label: 'Big Tech', points: 25 },
+                { emoji: '📵', label: 'Obsolescence', points: 20 },
+                { emoji: '💸', label: 'Abonnement', points: 15 },
+                { emoji: '🔒', label: 'Propriétaire', points: 20 },
+                { emoji: '☁️', label: 'Cloud US', points: 18 },
+                { emoji: '🍪', label: 'Traqueurs', points: 22 }
+            ],
+            neutral: [
+                { emoji: '💻', label: 'Hardware', points: 0 },
+                { emoji: '🔌', label: 'Câble', points: 0 },
+                { emoji: '🖱️', label: 'Souris', points: 0 }
+            ]
+        };
+
+        // ========== ÉTAT DU JEU ==========
+        let gameState = {
+            score: 0,
+            health: 100,
+            combo: 1,
+            timeLeft: 120,
+            gameActive: false,
+            mode: 'classic',
+            wave: 1,
+            hits: 0,
+            misses: 0,
+            enemiesDestroyed: 0,
+            damagesTaken: 0,
+            startTime: 0
+        };
+
+        let gameLoop, timerInterval, spawnInterval, enemyShootInterval;
+        let activeTargets = [];
+
+        // ========== FONCTIONS PRINCIPALES ==========
+        function startGame(mode) {
+            gameState.mode = mode;
+            gameState.timeLeft = GAME_CONFIG[mode].duration;
+            gameState.gameActive = true;
+            gameState.startTime = Date.now();
+
+            // Reset stats
+            gameState.score = 0;
+            gameState.health = 100;
+            gameState.combo = 1;
+            gameState.hits = 0;
+            gameState.misses = 0;
+            gameState.wave = 1;
+
+            document.getElementById('start-screen').classList.add('hidden');
+            document.getElementById('mode-name').textContent =
+                mode === 'classic' ? 'Classique' :
+                    mode === 'survival' ? 'Survie' : 'Speedrun';
+
+            updateDisplay();
+            startGameLoops();
+        }
+
+        function startGameLoops() {
+            const config = GAME_CONFIG[gameState.mode];
+
+            // Timer
+            if (gameState.mode !== 'survival') {
+                timerInterval = setInterval(() => {
+                    gameState.timeLeft--;
+                    updateDisplay();
+
+                    if (gameState.timeLeft <= 0) {
+                        endGame('time');
+                    }
+
+                    // Augmenter la difficulté toutes les 20s
+                    if (gameState.timeLeft % 20 === 0) {
+                        gameState.wave++;
+                        document.getElementById('wave').textContent = gameState.wave;
+                    }
+                }, 1000);
+            } else {
+                // Timer survie (chronomètre)
+                timerInterval = setInterval(() => {
+                    updateDisplay();
+                    // Difficulté augmente plus vite en survie
+                    if (Math.floor((Date.now() - gameState.startTime) / 1000) % 15 === 0) {
+                        gameState.wave++;
+                        document.getElementById('wave').textContent = gameState.wave;
+                    }
+                }, 1000);
+            }
+
+            // Spawn des cibles
+            spawnInterval = setInterval(() => {
+                spawnTarget();
+            }, Math.max(400, config.spawnRate - (gameState.wave * 100))); // Cap à 400ms
+
+            // Tirs ennemis
+            enemyShootInterval = setInterval(() => {
+                enemyShoot();
+            }, Math.max(800, config.enemyShootRate - (gameState.wave * 200)));
+        }
+
+        function spawnTarget() {
+            if (!gameState.gameActive) return;
+
+            const container = document.getElementById('game-container');
+            const target = document.createElement('div');
+            target.className = 'target';
+
+            // Probabilités dynamiques
+            const rand = Math.random();
+            let type, targetData;
+
+            if (rand < 0.6) {
+                type = 'good';
+                targetData = TARGETS.good[Math.floor(Math.random() * TARGETS.good.length)];
+            } else if (rand < 0.9) {
+                type = 'bad';
+                targetData = TARGETS.bad[Math.floor(Math.random() * TARGETS.bad.length)];
+            } else {
+                type = 'neutral';
+                targetData = TARGETS.neutral[Math.floor(Math.random() * TARGETS.neutral.length)];
+            }
+
+            target.classList.add(type);
+            target.dataset.type = type;
+            target.dataset.points = targetData.points;
+
+            target.innerHTML = `
+                <div class="target-icon">${targetData.emoji}</div>
+                <div class="target-label">${targetData.label}</div>
+            `;
+
+            // Position aléatoire (éviter les bords extrêmes)
+            const maxX = window.innerWidth - 120;
+            const maxY = window.innerHeight - 250;
+            target.style.left = Math.random() * maxX + 20 + 'px';
+            target.style.top = Math.random() * maxY + 100 + 'px';
+
+            // Gestion du clic
+            target.addEventListener('mousedown', (e) => hitTarget(e, target));
+
+            container.appendChild(target);
+            activeTargets.push(target);
+
+            // Retirer après un certain temps si pas cliqué
+            setTimeout(() => {
+                if (target.parentElement && gameState.gameActive) {
+                    target.remove();
+                    activeTargets = activeTargets.filter(t => t !== target);
+                    // Pas de pénalité si on rate une cible, sauf si c'est un méchant qui part
+                }
+            }, 6000 - (gameState.wave * 200));
+        }
+
+        function hitTarget(e, target) {
+            if (!gameState.gameActive) return;
+
+            e.stopPropagation(); // Empêche de compter comme un miss
+
+            const points = parseInt(target.dataset.points);
+            const type = target.dataset.type;
+
+            let finalPoints = points;
+
+            // Logique de score
+            if (type === 'bad') {
+                // Tirer sur un ennemi (Big Tech) = bon
+                finalPoints = Math.floor(Math.abs(points) * gameState.combo);
+                gameState.combo = Math.min(gameState.combo + 0.5, 8); // Max combo x8
+                gameState.hits++;
+                gameState.enemiesDestroyed++;
+
+                // Petit soin si on élimine un ennemi
+                if (Math.random() > 0.8) gameState.health = Math.min(100, gameState.health + 2);
+
+                if (gameState.combo >= 3) showCombo();
+                createLaser(e.clientX, e.clientY, false);
+            } else if (type === 'good') {
+                // Tirer sur le Libre = mauvais
+                gameState.combo = 1; // Reset combo
+                gameState.health -= 10;
+                finalPoints = points; // Points négatifs
+                document.body.classList.add('damage-effect');
+                setTimeout(() => document.body.classList.remove('damage-effect'), 500);
+                createLaser(e.clientX, e.clientY, true); // Laser rouge
+            } else {
+                // Neutral - petit bonus
+                finalPoints = Math.floor(points * gameState.combo);
+                gameState.hits++;
+                createLaser(e.clientX, e.clientY, false);
+            }
+
+            gameState.score += finalPoints;
+            if (gameState.score < 0) gameState.score = 0;
+
+            showHitEffect(e.clientX, e.clientY, finalPoints);
+
+            target.remove();
+            activeTargets = activeTargets.filter(t => t !== target);
+
+            updateDisplay();
+
+            if (gameState.health <= 0) endGame('death');
+        }
+
+        function enemyShoot() {
+            if (!gameState.gameActive || activeTargets.length === 0) return;
+
+            // Les cibles 'bad' tirent
+            const enemies = activeTargets.filter(t => t.dataset.type === 'bad');
+            if (enemies.length === 0) return;
+
+            const enemy = enemies[Math.floor(Math.random() * enemies.length)];
+            const rect = enemy.getBoundingClientRect();
+
+            createEnemyLaser(rect.left + 45, rect.top + 45);
+
+            // Dégâts différés pour coller à l'animation
+            setTimeout(() => {
+                if (gameState.gameActive) {
+                    const damage = 5 + gameState.wave;
+                    gameState.health -= damage;
+                    gameState.damagesTaken += damage;
+                    updateDisplay();
+
+                    if (gameState.health <= 0) endGame('death');
+                }
+            }, 400);
+        }
+
+        function createLaser(x, y, isBad) {
+            const laser = document.createElement('div');
+            laser.className = isBad ? 'laser-beam miss' : 'laser-beam';
+            laser.style.left = x + 'px';
+            laser.style.top = '0px'; // Part du haut
+            laser.style.height = y + 'px'; // S'arrête à la souris
+            document.body.appendChild(laser);
+            setTimeout(() => laser.remove(), 300);
+        }
+
+        function createEnemyLaser(x, y) {
+            const laser = document.createElement('div');
+            laser.className = 'enemy-laser';
+            laser.style.left = x + 'px';
+            laser.style.top = y + 'px';
+            document.body.appendChild(laser);
+            setTimeout(() => laser.remove(), 500);
+        }
+
+        function showHitEffect(x, y, points) {
+            const effect = document.createElement('div');
+            effect.className = 'hit-effect';
+            effect.textContent = points > 0 ? '+' + points : points;
+            effect.style.left = x + 'px';
+            effect.style.top = y + 'px';
+            effect.style.color = points > 0 ? '#2ecc71' : '#e74c3c';
+            document.body.appendChild(effect);
+            setTimeout(() => effect.remove(), 800);
+        }
+
+        function showCombo() {
+            const existing = document.querySelector('.combo-indicator');
+            if (existing) existing.remove();
+
+            const combo = document.createElement('div');
+            combo.className = 'combo-indicator';
+            combo.textContent = `COMBO x${gameState.combo.toFixed(1)}! 🔥`;
+            document.body.appendChild(combo);
+            setTimeout(() => combo.remove(), 800);
+        }
+
+        function updateDisplay() {
+            document.getElementById('score').textContent = gameState.score;
+            document.getElementById('combo').textContent = `x${gameState.combo.toFixed(1)}`;
+            document.getElementById('health-value').textContent = Math.max(0, Math.floor(gameState.health));
+
+            const healthFill = document.getElementById('health-fill');
+            healthFill.style.width = Math.max(0, gameState.health) + '%';
+            healthFill.classList.toggle('low', gameState.health < 30);
+
+            if (gameState.mode !== 'survival') {
+                const minutes = Math.floor(gameState.timeLeft / 60);
+                const seconds = gameState.timeLeft % 60;
+                document.getElementById('timer').textContent =
+                    `${minutes}:${seconds.toString().padStart(2, '0')}`;
+            } else {
+                // Chrono montant pour le mode survie
+                const elapsed = Date.now() - gameState.startTime;
+                const minutes = Math.floor(elapsed / 60000);
+                const seconds = Math.floor((elapsed % 60000) / 1000);
+                document.getElementById('timer').textContent =
+                    `${minutes}:${seconds.toString().padStart(2, '0')}`;
+            }
+        }
+
+        // Gestion du tir raté (clic dans le vide)
+        document.getElementById('game-container').addEventListener('mousedown', (e) => {
+            if (!gameState.gameActive) return;
+
+            // Si on arrive ici, c'est qu'on a cliqué sur le fond
+            gameState.combo = 1;
+            gameState.misses++;
+            updateDisplay();
+
+            // Laser rouge pour indiquer l'erreur
+            createLaser(e.clientX, e.clientY, true);
+        });
+
+        function endGame(reason) {
+            gameState.gameActive = false;
+
+            clearInterval(timerInterval);
+            clearInterval(spawnInterval);
+            clearInterval(enemyShootInterval);
+
+            activeTargets.forEach(t => t.remove());
+            activeTargets = [];
+
+            const gameOverScreen = document.getElementById('game-over-screen');
+            const title = document.getElementById('game-over-title');
+            const message = document.getElementById('game-over-message');
+
+            if (reason === 'time') {
+                title.textContent = '⏰ Mission Achevée !';
+                message.textContent = 'Vous avez défendu le numérique libre avec succès !';
+            } else if (reason === 'death') {
+                title.textContent = '💀 Système Corrompu !';
+                message.textContent = 'Vous avez trop endommagé le Libre...';
+            }
+
+            document.getElementById('final-score').textContent = gameState.score;
+            document.getElementById('game-stats-detail').innerHTML = `
+                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; text-align:left;">
+                    <div>🎯 Précision: ${Math.round((gameState.hits / (gameState.hits + gameState.misses || 1)) * 100)}%</div>
+                    <div>🌊 Vague atteinte: ${gameState.wave}</div>
+                    <div>🔥 Meilleur Combo: x${gameState.combo.toFixed(1)}</div>
+                    <div>💔 Dégâts reçus: ${gameState.damagesTaken}</div>
+                </div>
+            `;
+
+            gameOverScreen.classList.remove('hidden');
+            saveScore();
+        }
+
+        function saveScore() {
+            const scores = JSON.parse(localStorage.getItem('nirdLasergameScores') || '[]');
+            scores.push({
+                score: gameState.score,
+                mode: gameState.mode,
+                date: new Date().toLocaleDateString(),
+                wave: gameState.wave
+            });
+            // Trier et garder les 10 meilleurs
+            scores.sort((a, b) => b.score - a.score);
+            localStorage.setItem('nirdLasergameScores', JSON.stringify(scores.slice(0, 10)));
+        }
+
+        function showLeaderboard() {
+            document.getElementById('game-over-screen').classList.add('hidden');
+            const leaderboardScreen = document.getElementById('leaderboard-screen');
+            const leaderboardContent = document.getElementById('leaderboard-content');
+
+            const scores = JSON.parse(localStorage.getItem('nirdLasergameScores') || '[]');
+
+            if (scores.length === 0) {
+                leaderboardContent.innerHTML = '<p style="text-align: center; padding:20px;">Aucun score enregistré. Soyez le premier héros !</p>';
+            } else {
+                leaderboardContent.innerHTML = scores.map((score, index) => `
+                    <div class="leaderboard-entry ${index < 3 ? 'top' : ''}">
+                        <span>#${index + 1} ${score.mode.toUpperCase()} (Vague ${score.wave}) - ${score.date}</span>
+                        <strong>${score.score} pts</strong>
+                    </div>
+                `).join('');
+            }
+
+            leaderboardScreen.classList.remove('hidden');
+        }
+    </script>
+</body>
+
+</html>
