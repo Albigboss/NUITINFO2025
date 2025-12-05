@@ -1,3 +1,115 @@
+
+
+/* --- Agencement du Plateau --- */
+#game-container {
+    display: grid;
+    /* Adaptez le nombre de colonnes à votre design, ici 7x4 pour 26 cartes + espace */
+    grid-template-columns: repeat(7, 1fr); 
+    gap: 10px;
+    perspective: 1000px; /* IMPORTANT pour l'effet 3D */
+    margin-top: 20px;
+}
+
+/* --- Le Conteneur de la Carte --- */
+.card-container {
+    width: 80px; /* Taille de la carte */
+    height: 80px;
+    cursor: pointer;
+}
+
+/* --- L'élément qui tourne --- */
+.card-inner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    transition: transform 0.6s;
+    transform-style: preserve-3d; /* Permet l'effet 3D */
+}
+
+/* --- Classe de retournement --- */
+.card-inner.is-flipped {
+    transform: rotateY(180deg);
+}
+
+/* --- Les Faces de la Carte --- */
+.card-face {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden; /* Cache la face opposée */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 2em;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+}
+
+.card-front {
+    background-color: #2196F3;
+    color: white;
+    transform: rotateY(180deg);
+}
+
+.card-back {
+    background-color: #bbb;
+    color: #333;
+}
+
+/* --- État Trouvé --- */
+.card-inner.is-matched .card-front {
+    background-color: #4CAF50; /* Vert pour succès */
+    box-shadow: 0 0 10px #4CAF50;
+}
+
+
+.opinion-section {
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    max-width: 600px;
+    width: 100%;
+    margin-top: 30px;
+    margin: auto;
+}
+
+.opinion-section h2 {
+    margin-bottom: 15px;
+    color: #333;
+}
+
+
+.opinion-section textarea {
+    resize: vertical;
+    padding: 10px;
+    font-size: 1em;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    width: 96%;
+}
+
+.opinion-section input[type="submit"] {
+    padding: 10px;
+    font-size: 1em;
+    background-color: #2196F3;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.submit-button {
+    position: absolute;
+}
+
+#maze-container {
+    display: flex;
+    flex-direction: column;
+    border: 2px solid black;
+    margin: 20px auto;
+    width: fit-content;
+}
 html {
     height: 100%;
 }
@@ -537,9 +649,46 @@ body > div:last-of-type {
         width: calc(100% - 2rem);
         margin: 1rem;
     }
+
 }
 
 
+
+
+.cell {
+    width: 30px;
+    height: 30px;
+    box-sizing: border-box;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.wall {
+    background-color: #333;
+    border: 1px solid #222;
+}
+
+.path {
+    background-color: #eee;
+}
+
+.player {
+    background-color: royalblue;
+    color: white;
+    border-radius: 50%;
+}
+
+.start {
+    background-color: lightgreen;
+}
+
+.end {
+    background-color: firebrick;
+    color: white;
+}
 
 
 /* From Uiverse.io by rishichawda */ 
@@ -1057,3 +1206,4 @@ body.dark-mode .answer-btn.correct {
         font-size: 0.95rem;
     }
 }
+

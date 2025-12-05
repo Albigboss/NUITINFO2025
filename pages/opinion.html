@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Opinion</title>
+    <link rel="stylesheet" href="../css/style.css">
+    
+</head>
+<body>  
+    <header>
+        <a href="../index.html"><img src="../images/logo_nird.png" alt="Logo NIRD" class="logo"></a>
+        <nav>
+            <ul class="navbar">
+                <li><a href="./quizz.html">Quizz</a></li>
+                <li><a href="./conseils.html">Bon Conseil</a></li>
+                <li><a href="./jeu-NIRD.html">Jeu NIRD</a></li>
+                <li><a href="./lasergame.html">Laser Game</a></li>
+                <li><a href="#">Contactez-nous</a></li>
+            </ul>
+        </nav>
+    </header>  
+    <main>
+        <section class = "opinion-section">
+            <h2>Donner votre asvis</h2>
+            <p>Votre avis sur nird nous intéresse veuillez donner votre avis positive ou critique constructif.</p>
+            <form id="opinion-form" action="felicitation.html" method="get">
+                <label for="opinion">Votre avis :</label><br>
+                <textarea id="opinion" name="opinion" rows="4" cols="50" required></textarea><br><br>
+                <input type="submit" id="submitButton" value="Envoyer">
+            </form>
+            <script src="../js/global.js"></script>
+            <script src="../js/js_opinion.js"></script>
+        </section>
+        <div id="game-container"></div>
+        <p id="message"></p>
+        <script src="../js/js_memorie.js"></script>
+        <script src="../js/js_rythme.js"></script>
+        <script src="../js/js_findLetters.js"></script>
+        <script src="../js/js_block.js"></script>
+        <script src="../js/js_timing.js"></script>
+        <script src="../js/js_maze.js"></script>
+    </main>
+    
+</body>
+</html>
